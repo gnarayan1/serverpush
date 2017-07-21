@@ -1,6 +1,7 @@
 package com.trizetto.networx.hack.serverpush;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.Async;
@@ -25,9 +26,9 @@ public class MyService {
 	@Async
 	public void getStatus(SseEmitter sse) throws InterruptedException {
 
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i <= 100; i+=5) {
 			System.out.println("Current Progress  = " + i);
-			Thread.sleep(1000L);
+			Thread.sleep(ThreadLocalRandom.current().nextInt(1, 5)*1000L);
 			try {
 				
 				sse.send(i);
