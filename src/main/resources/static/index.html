@@ -13,7 +13,7 @@
   var connected = false;
 
 	var connect = function(progressbar) {
-		var source = new EventSource('/stream');
+		var source = new EventSource('/stream/123');
 
 		source.addEventListener('open', function(e) {
 			console.log('connected');

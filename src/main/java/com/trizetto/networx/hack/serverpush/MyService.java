@@ -28,10 +28,11 @@ public class MyService {
 
 		for (int i = 0; i <= 100; i+=5) {
 			System.out.println("Current Progress  = " + i);
-			Thread.sleep(ThreadLocalRandom.current().nextInt(1, 5)*1000L);
+			
 			try {
 				
 				sse.send(i);
+				Thread.sleep(ThreadLocalRandom.current().nextInt(1, 5)*1000L);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
