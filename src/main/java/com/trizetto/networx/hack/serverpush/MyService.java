@@ -26,11 +26,11 @@ public class MyService {
 	public void getStatus(SseEmitter sse) throws InterruptedException {
 
 		for (int i = 0; i < 100; i++) {
-			System.out.println("Calling for i" + i);
+			System.out.println("Current Progress  = " + i);
 			Thread.sleep(1000L);
 			try {
 				
-				sse.send("Value of i is " + i);
+				sse.send(i);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
