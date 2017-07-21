@@ -11,6 +11,7 @@
   <script>
   
   var connected = false;
+  var alertConnected = false;
 
 	var connect = function(progressbar) {
 		var source = new EventSource('/stream/123');
@@ -32,10 +33,30 @@
           }
       }, false);
 	}
+	
+	var connectAlerts = function(alertsid) {
+		var source = new EventSource('/alerts');
+
+		source.addEventListener('open', function(e) {
+			console.log('alerts connected');
+		});
+		source.addEventListener('message', function(e) {
+			console.log(e.data);
+			var message = e.data;
+			alertsid.append("<li>"+message+"<br>");
+			//$('#message').text();
+		}, false);
+		source.addEventListener('error', function (e) {
+          if (e.readyState == EventSource.CLOSED) {
+        	  alertConnected = false;
+          }
+      }, false);
+	}
   
   $( function() {
     var progressTimer,
       progressbar = $( "#progressbar" ),
+      alertsid = $( "#alerts" ),
       progressLabel = $( ".progress-label" ),
       dialogButtons = [{
         text: "Cancel Progress",
@@ -104,6 +125,8 @@
         .text( "Starting download..." );
       downloadButton.trigger( "focus" );
     }
+    
+    connectAlerts(alertsid);
   } );
   </script>
   <style>
@@ -123,11 +146,23 @@
 </head>
 <body>
  
+ <table>
+ <tr>
+ <td width="500px">
+<div id="alerts" title="Start Alerts">
+<h4>Alerts</h4><br>
+</div>
+</td>
+ <td>
 <div id="dialog" title="Start Modeling">
   <div class="progress-label">Starting Modeling...</div>
   <div id="progressbar"></div>
 </div>
 <button id="downloadButton">Start Modeling</button>
+</td>
+</tr>
+</table>
+
  
  
 </body>

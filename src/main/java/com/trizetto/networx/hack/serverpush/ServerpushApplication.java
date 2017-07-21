@@ -18,10 +18,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @EnableAsync
 @Controller
 public class ServerpushApplication {
-	
-	
-	
-	
+
 	public static List<MyEmitter> ssList = new ArrayList<>();
 
 	@Autowired
@@ -37,6 +34,22 @@ public class ServerpushApplication {
 
 		try {
 			myService.getStatus(emitter);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		return emitter;
+	}
+
+	@RequestMapping(path = "/alerts", method = RequestMethod.GET)
+	public SseEmitter alerts() throws IOException {
+
+		System.out.println("Stream Called!!!");
+		SseEmitter emitter = new SseEmitter();
+
+		try {
+			myService.getAlerts(emitter);
+			;
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

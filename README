@@ -1,0 +1,5 @@
+README
+
+Clone the project. 
+
+Run mvn spring-boot:run
