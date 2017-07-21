@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Progress Test</title>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+	integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+	crossorigin="anonymous"></script>
+</head>
+<body>
+
+	<div>
+		<div id="message"></div>
+	</div>
+	<script>
+		var connected = false;
+
+		var connect = function() {
+			var source = new EventSource('/stream');
+
+			source.addEventListener('open', function(e) {
+				console.log('connected');
+			});
+			source.addEventListener('message', function(e) {
+				console.log(e.data);
+				var message = e.data;
+
+				
+				$('#message').text(message);
+			}, false);
+			source.addEventListener('error', function (e) {
+	            if (e.readyState == EventSource.CLOSED) {
+	                connected = false;
+	                connect();
+	            }
+	        }, false);
+		}
+
+		$(document).ready(function() {
+			connect();
+		});
+	</script>
+
+</body>
+</html>
