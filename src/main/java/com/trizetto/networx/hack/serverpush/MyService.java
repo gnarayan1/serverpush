@@ -15,7 +15,7 @@ public class MyService {
 	@Bean
 	public Executor asyncExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(1);
+		executor.setCorePoolSize(10);
 		executor.setMaxPoolSize(10);
 		executor.setQueueCapacity(500);
 		executor.setThreadNamePrefix("MyAsync");
@@ -24,38 +24,41 @@ public class MyService {
 	}
 
 	@Async
-	public void getStatus(SseEmitter sse) throws InterruptedException {
+	public void getStatus(String modelId) throws InterruptedException {
 
+		SseEmitter sse = ServerpushApplication.sseMap.get(modelId);
+		
 		for (int i = 0; i <= 100; i+=5) {
-			System.out.println("Current Progress  = " + i);
-			
-			try {
-				
+			System.out.println("Current Progress  = " + i);		
+			try {				
 				sse.send(i);
 				Thread.sleep(ThreadLocalRandom.current().nextInt(1, 5)*1000L);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-
+		sse.complete();
 	}
 	
 	@Async
 	public void getAlerts(SseEmitter sse) throws InterruptedException {
 		
-		String[] alerts  = {"Model AmericanPhysicians is Complete", "Model SingerOrtho is Complete",
-				"Model LargeTest is taking longer than usual", "Scheduled Purge to run in 3 hours", "RateSheet JaneContract is unsed for 6 months" };
-
+		String[] alerts  = {"Model AmericanPhysicians is Complete", "Model SingerOrtho is Complete",	
+				"Model LargeTest is taking longer than usual", "Scheduled Purge to run in 3 hours", "RateSheet JaneContract is unsed for 6 months", "Node 2 is heap is 80% full" };
+		
+		
+		Thread.sleep(10000L);
 		for (int i = 0; i < alerts.length; i++) {
-			System.out.println("Sending Alert " + i);
+			System.out.println("Sending Alert " + i);			
 			
-			try {		
+			try {	
 				sse.send(alerts[i]);
 				Thread.sleep(10000L);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+		sse.complete();
 
 	}
 

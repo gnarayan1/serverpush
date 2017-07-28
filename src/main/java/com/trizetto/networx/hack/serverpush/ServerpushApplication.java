@@ -1,8 +1,8 @@
 package com.trizetto.networx.hack.serverpush;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -19,21 +19,19 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @Controller
 public class ServerpushApplication {
 
-	public static List<MyEmitter> ssList = new ArrayList<>();
+	public static Map<String, MyEmitter> sseMap = new HashMap<>();
 
 	@Autowired
 	MyService myService;
 
 	@RequestMapping(path = "/stream/{modelId}", method = RequestMethod.GET)
 	public SseEmitter stream(@PathVariable String modelId) throws IOException {
-
-		System.out.println("Stream Called!!!");
 		MyEmitter emitter = new MyEmitter();
 		emitter.setModelId(modelId);
-		ssList.add(emitter);
+		sseMap.put(modelId, emitter);
 
 		try {
-			myService.getStatus(emitter);
+			myService.getStatus(modelId);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -43,8 +41,6 @@ public class ServerpushApplication {
 
 	@RequestMapping(path = "/alerts", method = RequestMethod.GET)
 	public SseEmitter alerts() throws IOException {
-
-		System.out.println("Stream Called!!!");
 		SseEmitter emitter = new SseEmitter();
 
 		try {
@@ -55,6 +51,12 @@ public class ServerpushApplication {
 		}
 
 		return emitter;
+	}
+	
+	
+	@RequestMapping(path = "/notify/{modelId}/{percentage}", method = RequestMethod.GET)
+	public void notify(@PathVariable String modelId, @PathVariable String percentage) throws IOException {
+			sseMap.get(modelId).send(percentage);
 	}
 
 	public static void main(String[] args) {
