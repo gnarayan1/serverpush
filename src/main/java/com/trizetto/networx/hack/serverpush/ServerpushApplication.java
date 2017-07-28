@@ -56,7 +56,11 @@ public class ServerpushApplication {
 	
 	@RequestMapping(path = "/notify/{modelId}/{percentage}", method = RequestMethod.GET)
 	public void notify(@PathVariable String modelId, @PathVariable String percentage) throws IOException {
+		System.out.println("Calling Notify for ModelId: "+modelId+ " Percentage ="+percentage);
+		if (sseMap.get(modelId) != null) {
 			sseMap.get(modelId).send(percentage);
+		}
+			
 	}
 
 	public static void main(String[] args) {

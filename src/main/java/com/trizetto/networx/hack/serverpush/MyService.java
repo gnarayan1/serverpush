@@ -50,9 +50,9 @@ public class MyService {
 		Thread.sleep(10000L);
 		for (int i = 0; i < alerts.length; i++) {
 			System.out.println("Sending Alert " + i);			
-			
+			String alert=alerts[i];
 			try {	
-				sse.send(alerts[i]);
+				sse.send(alert);
 				Thread.sleep(10000L);
 			} catch (Exception e) {
 				e.printStackTrace();
