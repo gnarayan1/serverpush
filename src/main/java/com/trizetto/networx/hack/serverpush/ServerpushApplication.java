@@ -24,14 +24,15 @@ public class ServerpushApplication {
 	@Autowired
 	MyService myService;
 
-	@RequestMapping(path = "/stream/{modelId}", method = RequestMethod.GET)
-	public SseEmitter stream(@PathVariable String modelId) throws IOException {
+	@RequestMapping(path = "/stream/{modelDefintionId}", method = RequestMethod.GET)
+	public SseEmitter stream(@PathVariable String modelDefintionId) throws IOException {
+		System.out.println("Calling Notify for ModelDefinitionId: "+modelDefintionId);
 		MyEmitter emitter = new MyEmitter();
-		emitter.setModelId(modelId);
-		sseMap.put(modelId, emitter);
+		emitter.setModelId(modelDefintionId);
+		sseMap.put(modelDefintionId, emitter);
 
 		try {
-			myService.getStatus(modelId);
+			myService.getStatus(modelDefintionId);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -55,10 +56,10 @@ public class ServerpushApplication {
 	
 	
 	@RequestMapping(path = "/notify/{modelId}/{percentage}", method = RequestMethod.GET)
-	public void notify(@PathVariable String modelId, @PathVariable String percentage) throws IOException {
-		System.out.println("Calling Notify for ModelId: "+modelId+ " Percentage ="+percentage);
-		if (sseMap.get(modelId) != null) {
-			sseMap.get(modelId).send(percentage);
+	public void notify(@PathVariable String modelDefinitionId, @PathVariable String percentage) throws IOException {
+		System.out.println("Calling Notify for ModelDefinitionId: "+modelDefinitionId+ " Percentage ="+percentage);
+		if (sseMap.get(modelDefinitionId) != null) {
+			sseMap.get(modelDefinitionId).send(percentage);
 		}
 			
 	}
